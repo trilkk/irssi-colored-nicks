@@ -1,0 +1,113 @@
+# Default color = none
+default_color = "-1";
+
+abstracts = {
+  # Line starts, these depend on the type of the line.
+  # Indented depending on following string.
+  line_start = "%N%K********%N";
+  s_channel = "%N%K******%N";
+  s_enter = "%N%K»»»»»»»»»%N";
+  s_info = "%N%K!!!!!!!!!%N";
+  s_leave = "%N%K«««««««««%N";
+  s_mode = "%N%K*********%N";
+  s_netjoin = "%N%K»»»»»»»%N";
+  s_netsplit = "%N%K««««««%N";
+  s_topic = "%N%K!!!!!!!!%N";
+
+  # Timestamp.
+  timestamp = "%K$*%N";
+
+  # Formatting for various info strings.
+  address = "%K[%c$*%K]%n";
+  address_split = "%K[%c$0%K <-> %c$1%K]%n";
+  channel = "%B$*%n";
+  comment = "%K(%c$*%K)%n";
+  mode = "%K<%w$*%K>%n";
+  more = "%K(%w$*%K)%n";
+  name = "%B$*%n";
+  note = "%y$*:%n";
+  netjoin = "%G$*%n";
+  netsplit = "%R$*%n";
+  note_in = "%g$*:%n";
+  note_out = "%m$*:%n";
+
+  # Formatting for messages.
+  msgchannel = "%K|%N %c$0";
+  msgtext = "%K|%N %|$0";
+  msgtext_hilight = "%Y%8»%N %|$0";
+  msgtext_notice = "%R%8»%N %|$0";
+
+  # Formatting for actions.
+  action_core = "%W* $*%n";
+  action = "{action_core $*} ";
+  ownaction = "{action %n$*}";
+  ownaction_target = "{action_core $0}%K:%c$1%n ";
+  pvtaction = "%W(*) $*%n ";
+  pvtaction_query = "{action %Y$*}";
+  pubaction = "{action %C$*}";
+
+  # Should be standard.
+  names_prefix = "";
+  names_nick = "%K[$0%n$1%K]%n ";
+  names_nick_op = "{names_nick $0 %y$1}";
+  names_nick_halfop = "{names_nick $0 %g$1}";
+  names_nick_voice = "{names_nick $0 %c$1}";
+  names_users = "{names_nick $0 $1}";
+  names_channel = ": {channel $0}";
+
+  # Statusbar.
+  prompt = "$* %K|%N ";
+  sb_act_text = "%c$*";
+  sb_act_msg = "%w$*";
+  sb_act_hilight = "%M$*";
+};
+
+formats = {
+  "fe-common/core" = {
+    # Window opening settings.
+    line_start_irssi = "{line_start} Irssi: ";
+    servertag = "%K[%n$[4]0%K]%n ";
+    timestamp = "{timestamp %%H%%M} ";
+    endofnames = "{channel $0} {mode $1 nicks} {comment $2 ops, $3 halfops, $4 voices, $5 normal}";
+    query_start = "starting query in {address $1} with {name $0}";
+    # Channel actions.
+    join = "%[-s]{s_enter} {note_in Join} %|{name $0} {address $1} to {channel $2}";
+    kick = "%[-s]{s_info} {note_out Kick} %|{name $0} by {name $2} from {channel $1} {comment $3}";
+    part = "%[-s]{s_leave} {note_out Part} %|{name $0} {address $1} from {channel $2} {comment $3}";
+    quit = "%[-s]{s_leave} {note_out Quit} %|{name $0} {address $1} from {channel $3} {comment $2}";
+    quit_once = "%[-s]{s_leave} {note_out Quit} %|{name $0} {address $1} from {channel $3} {comment $2}";
+    # Topic and nickname changes.
+    nick_changed = "%[-s]{s_mode} {note Nick} %|{name $0} changed to {name $1}";
+    your_nick_changed = "%[-s]{s_mode} {note Nick} %|{name $0} changed to {name $1}";
+    new_topic = "%[-s]{s_topic} {note Topic} %|{comment $2} set by {name $0} for {channel $1}";
+    topic_unset = "%[-s]{s_topic} {note Topic} %|removed for {channel $1} by {name $0}";
+    # Messages, colored_nicks.pl required.
+    pubmsg = "$cnnick%K$2$cnpadl {msgtext $1}";
+    pubmsg_channel = "$cnnick%K$3$cnpadl {msgchannel $1} {msgtext $2}";
+    pubmsg_hilight = "$cnnick%K$3$cnpads {msgtext_hilight $2}";
+    pubmsg_hilight_channel = "$cnnick%K$4$cnpads {msgchannel $2} {msgtext_hilight $3}";
+    pubmsg_me = "$cnnick%K$2$cnpads {msgtext_notice $1}";
+    pubmsg_me_channel = "$cnnick%K$3$cnpads {msgchannel $1} {msgtext_notice $2}";
+    msg_private = "$cnnick$cnpadl {msgtext $2}";
+    msg_private_query = "$cnnick$cnpadl {msgtext $2}";
+    own_msg = "$cnpadl%K$2$cnuser {msgtext $1}";
+    own_msg_channel = "$cnpadl%K$3$cnuser {msgchannel $1} {msgtext $2}";
+    own_msg_private = "$cnnick$cnpads {msgtext $1}";
+    own_msg_private_query = "$cnpadl$cnuser {msgtext $1}";
+  };
+  "fe-common/irc" = {
+    # Channel info strings.
+    topic = "%[-s]{s_topic} {note Topic} %|{comment $1} for {channel $0}";
+    no_topic = "%[-s]{s_topic} {note Topic} %| not set for {channel $0}";
+    chanmode_change = "%[-s]{s_mode} {note Mode} %|{mode $1} in {channel $0} by {name $2}";
+    channel_mode = "%[-s]{s_normal} {note Mode} %|{mode $1} of {channel $0}";
+    channel_created = "%[-s]{s_channel} Channel: %|{channel $0} created $1";
+    channel_synced = "%[-s]{s_channel} Channel: %|{channel $0} join synced in {mode $1 secs}";
+    netsplit = "%[-s]{s_netsplit} {netsplit Netsplit} %|{address_split $0 $1} quits: %w$2";
+    netsplit_more = "%[-s]{s_netsplit} {netsplit Netsplit} %|{address_split $0 $1} quits: %w$2{more $3 more}";
+    netsplit_join = "%[-s]{s_netjoin} {netjoin Netjoin} %|joins: %w$0";
+    netsplit_join_more = "%[-s]{s_netjoin} {netjoin Netjoin} %|joins: %w$0{more $1 more}";
+    server_chanmode_change = "%[-s]{s_mode} {note Mode} %|{mode $1} for {channel $0} by {address $2}";
+    topic_info = "%[-s]{s_topic} {note Topic} %|set by {name $0} {address $2} at {comment $1}";
+  };
+};
