@@ -63,6 +63,6 @@ Please take a look at `colored_nicks.theme` for details on how to use the expand
 
 ## References
 
-*\[1\]* [cubes.pl](https://github.com/irssi/scripts.irssi.org/blob/master/scripts/cubes.pl) can be used to get a nice listing of all irssi color codes.
+**\[1\]** [cubes.pl](https://github.com/irssi/scripts.irssi.org/blob/master/scripts/cubes.pl) can be used to get a nice listing of all irssi color codes.
 
-*\[2\]* [nickcolor-expando.pl](https://github.com/irssi/scripts.irssi.org/blob/master/scripts/nickcolor_expando.pl) by **Nei** is a different approach at nick coloring. This script borrows the irssi color code to terminal color code tranformation from said script.
+**\[2\]** [nickcolor-expando.pl](https://github.com/irssi/scripts.irssi.org/blob/master/scripts/nickcolor_expando.pl) by **Nei** is a different approach at nick coloring. This script borrows the irssi color code to terminal color code tranformation from said script.
