@@ -375,13 +375,13 @@ sub expando_cnuser_func
 ########################################
 
 Irssi::settings_add_str('misc', 'colored_nicks_colors',
-    ' %c %X2L' . # cyans (-, 73)
-    ' %g %X2J %X3I' . # greens, (-, 71, 106)
-    ' %w %X7P %X7S' . # whites (-, 247, 250)
-    ' %m %X54 %X44' . # magentas (164, -, 128)
-    ' %X56 %X46' . # oranges (166, 130)
-    ' %B %X2B' . # lightblues (-, 63)
-    ' %y %X5C %X4C' . # browns (-, 172, 136)
+    ' %c %X2H %X2L' . # cyans
+    ' %w %X3E %X7P %X7R' . # whites
+    ' %m %X3A %X44 %X59 %X46 %X47' . # magentas/purples
+    ' %B %X2B %X2G' . # blues
+    ' %y %X56 %X5C %X4C' . # oranges
+    ' %g %X2J %X2K %X3D %X3I' . # greens
+    ' %X57 %X58' . # pinks
     '');
 Irssi::settings_add_int('misc', 'colored_nicks_truncation_long', 12);
 Irssi::settings_add_int('misc', 'colored_nicks_truncation_short', 11);
