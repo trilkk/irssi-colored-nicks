@@ -4,17 +4,17 @@ Colors nicknames by with a pseudo-random hash calculated from the nickname. Incl
 
 ## Usage
 
-Clone this repository somewhere in your home directory. Let's assume directly at `~`:
+Clone this repository somewhere in your home directory. Let's assume directly at `~/`:
 
     cd ~
     git clone https://github.com/trilkk/irssi-colored-nicks.git
 
-Go to `.irssi/scripts` and link the script so it can be enabled:
+Go to `.irssi/scripts/` and link the script so it can be enabled:
 
     cd ~/.irssi/scripts
     ln -s ../../irssi-colored-nicks/colored_nicks.pl
 
-To enable the script automatically, add it to `~/.irssi/scripts/autorun`:
+To enable the script automatically, add it to `~/.irssi/scripts/autorun/`:
 
     cd ~/.irssi/scripts/autorun
     ln -s ../colored_nicks.pl
