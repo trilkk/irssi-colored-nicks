@@ -29,10 +29,13 @@ Go to `.irssi` and link the associated theme so it can be enabled in configurati
 The script provides the following settings:
 
     colored_nicks_colors : str
+    colored_nicks_hash_function : str
     colored_nicks_truncation_long : int
     colored_nicks_truncation_short : int
 
 `colored_nicks_colors` is a whitespace-separated list of irssi color codes that will be used as the array of colors to use.
+
+`colored_nicks_hash_function` is the hash function used to calculate the hash for over the nicknames. There are two hash functions available: `djb2` and `sdbm`. Any setting value other than the default `djb2` selects `sdbm` hash.
 
 `colored_nicks_truncation_long` and `colored_nicks_truncation_short` are truncation settings in character lengths to chich the nicknames are truncated. Values equal to or smaller than `0` disable the truncation.
 
@@ -48,6 +51,10 @@ Example addition to `~/.irssi/config`:
             colored_nicks_truncation_short = "11";
         };
     };
+
+## Commands
+
+Use the command `/colored_nicks_list` to display debug listing of all colorizations. Together with the `/cubes` command from `cubes.pl` it can be used to easily debug potential nickname colors and ordering.
 
 ## Themes
 

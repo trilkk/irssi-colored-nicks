@@ -196,13 +196,60 @@ sub get_color_array
     return split /\s/, $colors;
 }
 
+# Calculates djb2 hash over an array.
+# \param 0 Input array.
+# \return calculated hash.
+sub hash_djb2
+{
+    my @array = @_;
+    my $ret = 5381;
+    foreach my $cc (@array)
+    {
+        my $oo = ord($cc);
+        if(!is_zero_width($oo))
+        {
+            $ret = (($ret * 33) + $oo) & 0xFFFFFFFF;
+        }
+    }
+    return $ret;
+}
+
+# Calculates sdbm hash over an array.
+# \param 0 Input array.
+# \return calculated hash.
+sub hash_sdbm
+{
+    my @array = @_;
+    my $ret = 0;
+    foreach my $cc (@array)
+    {
+        my $oo = ord($cc);
+        if(!is_zero_width($oo))
+        {
+            $ret = (($ret * 65599) + $oo) & 0xFFFFFFFF;
+        }
+    }
+    return $ret;
+}
+
 # Tells if a character has zero width.
 # \param 0 Character.
 # \return True if character has zero widh, false otherwise.
 sub is_zero_width
 {
-    my $cc = ord($_[0]);
-    return ($cc == 0x200B);
+    my $cc = $_[0];
+    my @zero_width_chars =
+    (
+        0x200B,
+    );
+    foreach my $zz (@zero_width_chars)
+    {
+        if(($cc == $zz) || (ord($cc) == $zz))
+        {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 # Calculate real length of a nickname.
@@ -228,23 +275,19 @@ sub nick_length
 # \return Hash value.
 sub simple_hash
 {
-    # Remove characters that should not be taken into account for 
+    # Remove characters that should not be taken into account for.
     my $input_string = $_[0];
     $input_string =~ s/^[\s_\-^]*//;
     $input_string =~ s/[\s_\-^]*$//;
     my @array = split(//, $input_string);
-    # djb2
-    my $hash = 5381;
-    foreach my $cc (@array)
+    # Check for djb2 hash.
+    my $hash_function = Irssi::settings_get_str('colored_nicks_hash_function');
+    if($hash_function =~ /^djb2$/i)
     {
-        my $oo = ord($cc);
-        # Everything except zero width space is valid for hash.
-        if($oo != 0x200B)
-        {
-            $hash = $hash * 33 + $oo;
-        }
+        return hash_djb2(@array);
     }
-    return $hash;
+    # Fallback to sdbm hash.
+    return hash_sdbm(@array);
 }
 
 # Simple hash, but pick color based on nick.
@@ -375,14 +418,23 @@ sub expando_cnuser_func
 ########################################
 
 Irssi::settings_add_str('misc', 'colored_nicks_colors',
-    ' %c %X2H %X2L' . # cyans
-    ' %w %X3E %X7P %X7R' . # whites
-    ' %m %X3A %X44 %X59 %X46 %X47' . # magentas/purples
-    ' %B %X2B %X2G' . # blues
-    ' %y %X56 %X5C %X4C' . # oranges
-    ' %g %X2J %X2K %X3D %X3I' . # greens
-    ' %X57 %X58' . # pinks
+    '%c %X2L %X3L' . # cyans
+    ' ' .
+    '%X4A %X59 %m' . # magentas/purples
+    ' ' .
+    '%w %X3E %X7P %X7R' . # whites
+    ' ' .
+    '%g %X2I %X2J %X2K %X3I' . # greens
+    ' ' .
+    '%X46 %X4C %X4D' . # browns
+    ' ' .
+    '%X2G %X2H %X3H %B' . # blues
+    ' ' .
+    '%X5C %X56 %y' . # oranges/yellows
+    ' ' .
+    '%X57 %X58' . # pinks/reds
     '');
+Irssi::settings_add_str('misc', 'colored_nicks_hash_function', 'djb2');
 Irssi::settings_add_int('misc', 'colored_nicks_truncation_long', 12);
 Irssi::settings_add_int('misc', 'colored_nicks_truncation_short', 11);
 
@@ -425,7 +477,7 @@ Irssi::signal_add({
         'message own_private' => 'signal_cn_own_private',
 });
 
-Irssi::command_bind 'colored_nicks_list' => sub 
+Irssi::command_bind 'colored_nicks_list' => sub
 {
     my $window = Irssi::active_win;
     my $mode = MSGLEVEL_NEVER | MSGLEVEL_CLIENTCRAP;

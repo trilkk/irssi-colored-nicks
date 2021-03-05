@@ -34,8 +34,8 @@ abstracts = {
   # Formatting for messages.
   msgchannel = "%K|%N %c$0";
   msgtext = "%K|%N %|$0";
-  msgtext_hilight = "%Y%8»%N %|$0";
-  msgtext_notice = "%R%8»%N %|$0";
+  msgtext_hilight = "%Y%8»»%N %|$0";
+  msgtext_notice = "%R%8»»%N %|$0";
 
   # Formatting for actions.
   action_core = "%W* $*%n";
@@ -92,7 +92,7 @@ formats = {
     msg_private_query = "$cnnick$cnpadl {msgtext $2}";
     own_msg = "$cnpadl%K$2$cnuser {msgtext $1}";
     own_msg_channel = "$cnpadl%K$3$cnuser {msgchannel $1} {msgtext $2}";
-    own_msg_private = "$cnnick$cnpads {msgtext $1}";
+    own_msg_private = "$cnpadl$cnnick {msgtext $1}";
     own_msg_private_query = "$cnpadl$cnuser {msgtext $1}";
   };
   "fe-common/irc" = {
