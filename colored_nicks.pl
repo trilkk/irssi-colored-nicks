@@ -17,8 +17,6 @@ $VERSION = 'r4';
 
 # List of protocols to act on.
 my @action_protos = qw(irc silc xmpp);
-# Color listing. Updated on setup change.
-my @colors = ();
 # Global expando variable.
 my $expando_cnnick = '';
 # Global expando variable.
@@ -218,6 +216,16 @@ sub hash_sdbm
     return $ret;
 }
 
+# Gets the color array.
+# \return Color array.
+sub get_color_array()
+{
+    my $ret = Irssi::settings_get_str('colored_nicks_colors');
+    $ret =~ s/^\s+//;
+    $ret =~ s/\s+$//;
+    return split /\s/, $ret;
+}
+
 # Tells if a character has zero width.
 # \param 0 Character.
 # \return True if character has zero widh, false otherwise.
@@ -282,10 +290,7 @@ sub simple_hash
 sub simple_hash_color
 {
     my $input_string = $_[0];
-    if(!@colors)
-    {
-        signal_cn_setup_changed();
-    }
+    my @colors = get_color_array();
     return $colors[simple_hash($input_string) % @colors];
 }
 
@@ -359,16 +364,6 @@ sub signal_cn_own_private
     $expando_cnuser = create_irssi_nick($server->{nick}, '', $truncation_long);
 }
 
-# Setup change message.
-# Updates the colors array.
-sub signal_cn_setup_changed
-{
-    my $colors_string = Irssi::settings_get_str('colored_nicks_colors');
-    $colors_string =~ s/^\s+//;
-    $colors_string =~ s/\s+$//;
-    @colors = split /\s/, $colors_string;
-}
-
 ########################################
 # Irssi:: ##############################
 ########################################
@@ -431,17 +426,13 @@ Irssi::signal_add({
         'message public' => 'signal_cn_public',
         'message own_public' => 'signal_cn_own_public',
         'message own_private' => 'signal_cn_own_private',
-        'setup changed' => 'signal_cn_setup_changed',
 });
 
 Irssi::command_bind 'colored_nicks_list' => sub
 {
     my $window = Irssi::active_win;
     my $mode = MSGLEVEL_NEVER | MSGLEVEL_CLIENTCRAP;
-    if(!@colors)
-    {
-        signal_cn_setup_changed();
-    }
+    my @colors = get_color_array();
     foreach my $color (@colors)
     {
         my $code = create_color_command_code($color);
