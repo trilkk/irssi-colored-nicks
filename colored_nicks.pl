@@ -3,7 +3,6 @@
 ########################################
 
 use strict;
-use Encode ();
 use Irssi;
 use vars qw($VERSION %IRSSI);
 $VERSION = 'r4';
@@ -18,6 +17,8 @@ $VERSION = 'r4';
 
 # List of protocols to act on.
 my @action_protos = qw(irc silc xmpp);
+# Color listing. Updated on setup change.
+my @colors = ();
 # Global expando variable.
 my $expando_cnnick = '';
 # Global expando variable.
@@ -104,8 +105,6 @@ sub create_irssi_nick
     my $nick = $_[0];
     my $attr = $_[1];
     my $truncation = $_[2];
-    Encode::_utf8_on($nick);
-    Encode::_utf8_on($attr);
 
     my $len = nick_length($nick);
     if($attr)
@@ -151,8 +150,6 @@ sub create_padding
     my $nick = $_[0];
     my $attr = $_[1];
     my $truncation = $_[2];
-    Encode::_utf8_on($nick);
-    Encode::_utf8_on($attr);
 
     my $len = nick_length($nick);
     if($attr)
@@ -178,22 +175,11 @@ sub create_padding
 sub extract_attribution
 {
     my $nick = $_[0];
-    Encode::_utf8_on($nick);
 
     # Split nickname from boundary of allowed IRC nickname characters.
     # Non-breakable space and zero-width space are valid characters.
     $nick =~ /^([\w\s\|\^_`\-\{\}\[\]\\\x{00A0}\x{200B}\x{202F}]+)(.*)$/;
     return ($1, $2);
-}
-
-# Gets the color array from settings.
-# \return Color format array.
-sub get_color_array
-{
-    my $colors = Irssi::settings_get_str('colored_nicks_colors');
-    $colors =~ s/^\s+//;
-    $colors =~ s/\s+$//;
-    return split /\s/, $colors;
 }
 
 # Calculates djb2 hash over an array.
@@ -295,19 +281,11 @@ sub simple_hash
 # \return Color change string.
 sub simple_hash_color
 {
-    #my @colors = ('%B', '%g', '%y', '%m', '%w', '%c');
-    #my @colors =
-    #(
-    #    '%c', '%X2L', # cyans (-, 73)
-    #    '%g', '%X2J','%X3I', # greens, (-, 71, 106)
-    #    '%w', '%X7P', '%X7S', # whites (-, 247, 250)
-    #    '%m', '%X54', '%X44', # magentas (164, -, 128)
-    #    '%X56', '%X46', # oranges (166, 130)
-    #    '%B', '%X2B', # lightblues (-, 63)
-    #    '%y', '%X5C', '%X4C', # browns (-, 172, 136)
-    #);
     my $input_string = $_[0];
-    my @colors = get_color_array();
+    if(!@colors)
+    {
+        signal_cn_setup_changed();
+    }
     return $colors[simple_hash($input_string) % @colors];
 }
 
@@ -381,36 +359,14 @@ sub signal_cn_own_private
     $expando_cnuser = create_irssi_nick($server->{nick}, '', $truncation_long);
 }
 
-########################################
-# Expando functions ####################
-########################################
-
-# Expando wrapper function for nicknames of others.
-# \ŗeturn Nickname expando.
-sub expando_cnnick_func
+# Setup change message.
+# Updates the colors array.
+sub signal_cn_setup_changed
 {
-    return $expando_cnnick;
-}
-
-# Expando wrapper function for long padding.
-# \ŗeturn Nickname expando.
-sub expando_cnpadl_func
-{
-    return $expando_cnpadl;
-}
-
-# Expando wrapper function for short padding.
-# \ŗeturn Nickname expando.
-sub expando_cnpads_func
-{
-    return $expando_cnpads;
-}
-
-# Expando wrapper function for nicknames of the user.
-# \ŗeturn Nickname expando.
-sub expando_cnuser_func
-{
-    return $expando_cnuser;
+    my $colors_string = Irssi::settings_get_str('colored_nicks_colors');
+    $colors_string =~ s/^\s+//;
+    $colors_string =~ s/\s+$//;
+    @colors = split /\s/, $colors_string;
 }
 
 ########################################
@@ -418,17 +374,17 @@ sub expando_cnuser_func
 ########################################
 
 Irssi::settings_add_str('misc', 'colored_nicks_colors',
-    '%c %X2L %X3L' . # cyans
+    '%c %X1N %X2N' . # cyans
     ' ' .
     '%X4A %X59 %m' . # magentas/purples
     ' ' .
     '%w %X3E %X7P %X7R' . # whites
     ' ' .
-    '%g %X2I %X2J %X2K %X3I' . # greens
+    '%g %X1J %X2I %X2J %X3I' . # greens
     ' ' .
-    '%X46 %X4C %X4D' . # browns
+    '%X46 %X4C %X4J' . # browns
     ' ' .
-    '%X2G %X2H %X3H %B' . # blues
+    '%X1H %X3H %X3N %B' . # blues
     ' ' .
     '%X5C %X56 %y' . # oranges/yellows
     ' ' .
@@ -438,7 +394,7 @@ Irssi::settings_add_str('misc', 'colored_nicks_hash_function', 'djb2');
 Irssi::settings_add_int('misc', 'colored_nicks_truncation_long', 12);
 Irssi::settings_add_int('misc', 'colored_nicks_truncation_short', 11);
 
-Irssi::expando_create('cnnick', \&expando_cnnick_func, {
+Irssi::expando_create('cnnick', sub { $expando_cnnick }, {
         'message public' => 'none',
         'message own_public' => 'none',
         (map { ("message $_ action" => 'none',
@@ -446,7 +402,7 @@ Irssi::expando_create('cnnick', \&expando_cnnick_func, {
             } @action_protos),
     });
 
-Irssi::expando_create('cnpadl', \&expando_cnpadl_func, {
+Irssi::expando_create('cnpadl', sub { $expando_cnpadl }, {
         'message public' => 'none',
         'message own_public' => 'none',
         (map { ("message $_ action" => 'none',
@@ -454,7 +410,7 @@ Irssi::expando_create('cnpadl', \&expando_cnpadl_func, {
             } @action_protos),
     });
 
-Irssi::expando_create('cnpads', \&expando_cnpads_func, {
+Irssi::expando_create('cnpads', sub { $expando_cnpads }, {
         'message public' => 'none',
         'message own_public' => 'none',
         (map { ("message $_ action" => 'none',
@@ -462,7 +418,7 @@ Irssi::expando_create('cnpads', \&expando_cnpads_func, {
             } @action_protos),
     });
 
-Irssi::expando_create('cnuser', \&expando_cnuser_func, {
+Irssi::expando_create('cnuser', sub { $expando_cnuser }, {
         'message public' => 'none',
         'message own_public' => 'none',
         (map { ("message $_ action" => 'none',
@@ -475,13 +431,17 @@ Irssi::signal_add({
         'message public' => 'signal_cn_public',
         'message own_public' => 'signal_cn_own_public',
         'message own_private' => 'signal_cn_own_private',
+        'setup changed' => 'signal_cn_setup_changed',
 });
 
 Irssi::command_bind 'colored_nicks_list' => sub
 {
     my $window = Irssi::active_win;
     my $mode = MSGLEVEL_NEVER | MSGLEVEL_CLIENTCRAP;
-    my @colors = get_color_array();
+    if(!@colors)
+    {
+        signal_cn_setup_changed();
+    }
     foreach my $color (@colors)
     {
         my $code = create_color_command_code($color);
