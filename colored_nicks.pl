@@ -3,6 +3,7 @@
 ########################################
 
 use strict;
+use Encode();
 use Irssi;
 use vars qw($VERSION %IRSSI);
 $VERSION = 'r4';
@@ -173,6 +174,7 @@ sub create_padding
 sub extract_attribution
 {
     my $nick = $_[0];
+    Encode::_utf8_on($nick);
 
     # Split nickname from boundary of allowed IRC nickname characters.
     # Non-breakable space and zero-width space are valid characters.
