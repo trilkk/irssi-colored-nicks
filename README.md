@@ -46,7 +46,8 @@ Example addition to `~/.irssi/config`:
             theme = "colored_nicks.theme";
         };
         "perl/core/scripts" = {
-            colored_nicks_colors = "%c %X2L %g %X2J %X3I %w %X7P %X7S %m %X54 %X44 %X56 %X46 %B %X2B %y %X5C %X4C";
+            colored_nicks_colors = "%c %X1N %X2N %X4A %X59 %m %w %X3E %X7P %X7R %g %X1J %X2I %X2J %X3I %X46 %X4C %X4J %X1H %X3H %X3N %B %X5C %X56 %y %X57 %X58";
+            colored_nicks_hash = "djb2";
             colored_nicks_truncation_long = "12";
             colored_nicks_truncation_short = "11";
         };
