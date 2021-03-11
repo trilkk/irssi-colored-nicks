@@ -57,12 +57,12 @@ Example addition to `~/.irssi/config`:
 
 The script provides the following commands:
 
-    colored_nicks_list
-    colored_nicks_test
+    /colored_nicks_list
+    /colored_nicks_test
 
 Use the command `/colored_nicks_list` to display debug listing of all colorizations. Together with the `/cubes` command from `cubes.pl` it can be used to easily debug potential nickname colors and ordering.
 
-Individual nicknames can be tested with `colored_nicks_test`, which takes any amount of whitespace-separated words as input. These words will be printed colorized with the current settings.
+Individual nicknames can be tested with `/colored_nicks_test`, which takes any amount of whitespace-separated words as input. These words will be printed colorized with the current settings.
 
 ## Themes
 
