@@ -297,6 +297,37 @@ sub simple_hash_color
 }
 
 ########################################
+# Commands #############################
+########################################
+
+# Test command to list all colors in use.
+sub cmd_cn_list
+{
+    my $window = Irssi::active_win;
+    my $mode = MSGLEVEL_NEVER | MSGLEVEL_CLIENTCRAP;
+    my @colors = get_color_array();
+    for(my $ii = 0; ($ii < @colors); ++$ii)
+    {
+        my $color = @colors[$ii];
+        my $code = create_color_command_code($color);
+        # Insert non-breakable space as second character so irssi doesn't use the color code.
+        $color = substr($color, 0, 1) . "\x{200B}" . substr($color, 1);
+        $window->print($code . 'colored_nicks_' . $ii . '_' . $color, $mode);
+    }
+}
+
+# Test command for given input.
+# \param 0 Test nickname.
+sub cmd_cn_test
+{
+    my $nick = @_[0];
+    my $window = Irssi::active_win;
+    my $mode = MSGLEVEL_NEVER | MSGLEVEL_CLIENTCRAP;
+    my $truncation_long = Irssi::settings_get_int('colored_nicks_truncation_long');
+    $window->print(create_irssi_nick($nick, '', $truncation_long), $mode);
+}
+
+########################################
 # Signal hooks #########################
 ########################################
 
@@ -371,21 +402,21 @@ sub signal_cn_own_private
 ########################################
 
 Irssi::settings_add_str('misc', 'colored_nicks_colors',
-    '%c %X1N %X2N' . # cyans
+    '%c %X3N' . # cyans
     ' ' .
-    '%X4A %X59 %m' . # magentas/purples
+    '%X59 %X4B %X4A %m' . # magentas/purples
     ' ' .
-    '%w %X3E %X7P %X7R' . # whites
+    '%w %X7P %X7Q %X7R' . # whites
     ' ' .
     '%g %X1J %X2I %X2J %X3I' . # greens
     ' ' .
-    '%X46 %X4C %X4J' . # browns
+    '%X46 %X4C %X5I' . # browns
     ' ' .
-    '%X1H %X3H %X3N %B' . # blues
+    '%X2N %X2M %X1N %B' . # blues
     ' ' .
     '%X5C %X56 %y' . # oranges/yellows
     ' ' .
-    '%X57 %X58' . # pinks/reds
+    '%X58 %X57' . # pinks/reds
     '');
 Irssi::settings_add_str('misc', 'colored_nicks_hash_function', 'djb2');
 Irssi::settings_add_int('misc', 'colored_nicks_truncation_long', 12);
@@ -430,16 +461,5 @@ Irssi::signal_add({
         'message own_private' => 'signal_cn_own_private',
 });
 
-Irssi::command_bind 'colored_nicks_list' => sub
-{
-    my $window = Irssi::active_win;
-    my $mode = MSGLEVEL_NEVER | MSGLEVEL_CLIENTCRAP;
-    my @colors = get_color_array();
-    foreach my $color (@colors)
-    {
-        my $code = create_color_command_code($color);
-        # Insert non-breakable space as second character so irssi doesn't use the color code.
-        $color = substr($color, 0, 1) . "\x{200B}" . substr($color, 1);
-        $window->print($code . 'colored_nicks_' . $color, $mode);
-    }
-}
+Irssi::command_bind('colored_nicks_list', 'cmd_cn_list');
+Irssi::command_bind('colored_nicks_test', 'cmd_cn_test');
