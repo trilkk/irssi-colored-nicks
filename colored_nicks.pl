@@ -320,11 +320,25 @@ sub cmd_cn_list
 # \param 0 Test nickname.
 sub cmd_cn_test
 {
-    my $nick = @_[0];
+    my @nicks = split /\s/, $_[0];
     my $window = Irssi::active_win;
     my $mode = MSGLEVEL_NEVER | MSGLEVEL_CLIENTCRAP;
     my $truncation_long = Irssi::settings_get_int('colored_nicks_truncation_long');
-    $window->print(create_irssi_nick($nick, '', $truncation_long), $mode);
+    # Iterate over the input.
+    my $ret = '';
+    foreach my $nick (@nicks)
+    {
+        if($ret)
+        {
+            $ret .= ' ';
+        }
+        $ret .= create_irssi_nick($nick, '', $truncation_long);
+    }
+    # Only print if there was legit input.
+    if($ret)
+    {
+        $window->print($ret, $mode);
+    }
 }
 
 ########################################
