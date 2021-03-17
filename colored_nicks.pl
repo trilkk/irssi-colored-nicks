@@ -406,8 +406,8 @@ sub signal_cn_own_private
     my ($nick, $attr) = extract_attribution($input_nick);
     my $truncation_long = Irssi::settings_get_int('colored_nicks_truncation_long');
     $expando_cnnick = create_irssi_nick($nick, $attr, $truncation_long);
-    $expando_cnpadl = create_padding($server->{nick}, '', $truncation_long);
-    $expando_cnpads = create_padding($nick, $attr, $truncation_long);
+    $expando_cnpadl = create_padding($nick, $attr, $truncation_long);
+    $expando_cnpads = create_padding($server->{nick}, '', $truncation_long);
     $expando_cnuser = create_irssi_nick($server->{nick}, '', $truncation_long);
 }
 
