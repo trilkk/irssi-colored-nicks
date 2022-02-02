@@ -37,7 +37,7 @@ The script provides the following settings:
 
 `colored_nicks_hash_function` is the hash function used to calculate the hash for over the nicknames. There are two hash functions available: `djb2` and `sdbm`. Any setting value other than the default `djb2` selects `sdbm` hash.
 
-`colored_nicks_truncation_long` and `colored_nicks_truncation_short` are truncation settings in character lengths to chich the nicknames are truncated. Values equal to or smaller than `0` disable the truncation.
+`colored_nicks_truncation_long` and `colored_nicks_truncation_short` are truncation settings in character lengths to chich the nicknames are truncated. Values equal to or smaller than `0` disable the truncation. Long truncation length is intended for channels, where nicknames may have an extra associated status symbol such as voice or op. Short truncation length is intended for private messages.
 
 Example addition to `~/.irssi/config`:
 
