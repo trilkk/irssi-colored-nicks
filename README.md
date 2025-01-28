@@ -35,7 +35,8 @@ The script provides the following settings:
 
 `colored_nicks_colors` is a whitespace-separated list of irssi color codes that will be used as the array of colors to use.
 
-`colored_nicks_hash_function` is the hash function used to calculate the hash for over the nicknames. There are two hash functions available: `djb2` and `sdbm`. Any setting value other than the default `djb2` selects `sdbm` hash.
+`colored_nicks_hash_function` is the hash function used to calculate the hash for over the nicknames. There are two hash functions available: `djb2` and `sdbm`. Any setting value other than the default `djb2` selects `sdbm` hash.<br>
+Non-legitimate IRC nickname characters are not included in the hashing function and will not be colored. These remaining characters are still included in displayed nickname, are potentially truncated, and are displayed in dark gray. You can make use of this feature and have the related project [irssi-attribution](https://github.com/trilkk/irssi-attribution) append a non-ascii character as the attribution indicator to display bridged users in a non-intrusive manner.
 
 `colored_nicks_truncation_long` and `colored_nicks_truncation_short` are truncation settings in character lengths to which the nicknames are truncated or indented. Values equal to or smaller than `0` disable truncation. Long truncation length is intended for regular messages. Short truncation is intended for messages containing a hilight that potentially takes more space - this is the case for the example `colored_nicks.theme`. If the hilight does not affect line length, both truncations should have the same value.
 
