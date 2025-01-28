@@ -37,7 +37,7 @@ The script provides the following settings:
 
 `colored_nicks_hash_function` is the hash function used to calculate the hash for over the nicknames. There are two hash functions available: `djb2` and `sdbm`. Any setting value other than the default `djb2` selects `sdbm` hash.
 
-`colored_nicks_truncation_long` and `colored_nicks_truncation_short` are truncation settings in character lengths to chich the nicknames are truncated. Values equal to or smaller than `0` disable the truncation. Long truncation length is intended for channels, where nicknames may have an extra associated status symbol such as voice or op. Short truncation length is intended for private messages.
+`colored_nicks_truncation_long` and `colored_nicks_truncation_short` are truncation settings in character lengths to which the nicknames are truncated or indented. Values equal to or smaller than `0` disable truncation. Long truncation length is intended for regular messages. Short truncation is intended for messages containing a hilight that potentially takes more space - this is the case for the example `colored_nicks.theme`. If the hilight does not affect line length, both truncations should have the same value.
 
 Example addition to `~/.irssi/config`:
 
@@ -70,14 +70,18 @@ Due to also including truncation and padding, the expandos provided by the scrip
 
 The script provides the following expandos:
 
-    $cnnick
+    $cnnickl
+    $cnnicks
     $cnpadl
     $cnpads
     $cnuser
 
-`$cnnick` is the truncated string for general nicknames, `$cnuser` is the truncated string for the user's nickname.
+`$cnnickl` is the string for general nicknames truncated into `colored_nicks_truncation_long`.
+`$cnnicks` is the string for general nicknames truncated into `colored_nicks_truncation_short`.
 
 `$cnpadl` is the whitespace padding remaining after truncating the nicknames into `colored_nicks_truncation_long`. `$cnpads` is the whitespace padding remaining after truncating the nicknames into `colored_nicks_truncation_short`.
+
+`$cnuser` is the truncated string for the user's nickname. Since there can be no hilight from user's own strings, there is no need for potential long and short version.
 
 Please take a look at `colored_nicks.theme` for details on how to use the expandos.
 
