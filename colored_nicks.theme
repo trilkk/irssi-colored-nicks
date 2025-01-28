@@ -82,17 +82,17 @@ formats = {
     new_topic = "%[-s]{s_topic} {note Topic} %|{comment $2} set by {name $0} for {channel $1}";
     topic_unset = "%[-s]{s_topic} {note Topic} %|removed for {channel $1} by {name $0}";
     # Messages, colored_nicks.pl required.
-    pubmsg = "$cnnick%K$2$cnpadl {msgtext $1}";
-    pubmsg_channel = "$cnnick%K$3$cnpadl {msgchannel $1} {msgtext $2}";
-    pubmsg_hilight = "$cnnick%K$3$cnpads {msgtext_hilight $2}";
-    pubmsg_hilight_channel = "$cnnick%K$4$cnpads {msgchannel $2} {msgtext_hilight $3}";
-    pubmsg_me = "$cnnick%K$2$cnpads {msgtext_notice $1}";
-    pubmsg_me_channel = "$cnnick%K$3$cnpads {msgchannel $1} {msgtext_notice $2}";
-    msg_private = "$cnnick$cnpadl {msgtext $2}";
-    msg_private_query = "$cnnick$cnpadl {msgtext $2}";
+    pubmsg = "$cnnickl%K$2$cnpadl {msgtext $1}";
+    pubmsg_channel = "$cnnickl%K$3$cnpadl {msgchannel $1} {msgtext $2}";
+    pubmsg_hilight = "$cnnicks%K$3$cnpads {msgtext_hilight $2}";
+    pubmsg_hilight_channel = "$cnnicks%K$4$cnpads {msgchannel $2} {msgtext_hilight $3}";
+    pubmsg_me = "$cnnicks%K$2$cnpads {msgtext_notice $1}";
+    pubmsg_me_channel = "$cnnicks%K$3$cnpads {msgchannel $1} {msgtext_notice $2}";
+    msg_private = "$cnnickl$cnpadl {msgtext $2}";
+    msg_private_query = "$cnnickl$cnpadl {msgtext $2}";
     own_msg = "$cnpadl%K$2$cnuser {msgtext $1}";
     own_msg_channel = "$cnpadl%K$3$cnuser {msgchannel $1} {msgtext $2}";
-    own_msg_private = "$cnpadl$cnnick {msgtext $1}";
+    own_msg_private = "$cnpadl$cnnickl {msgtext $1}";
     own_msg_private_query = "$cnpads$cnuser {msgtext $1}";
   };
   "fe-common/irc" = {

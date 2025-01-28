@@ -3,7 +3,6 @@
 ########################################
 
 use strict;
-use Encode();
 use Irssi;
 use vars qw($VERSION %IRSSI);
 $VERSION = 'r4';
@@ -19,7 +18,9 @@ $VERSION = 'r4';
 # List of protocols to act on.
 my @action_protos = qw(irc silc xmpp);
 # Global expando variable.
-my $expando_cnnick = '';
+my $expando_cnnickl = '';
+# Global expando variable.
+my $expando_cnnicks = '';
 # Global expando variable.
 my $expando_cnpadl = '';
 # Global expando variable.
@@ -102,7 +103,9 @@ sub create_color_command_code
 sub create_irssi_nick
 {
     my $nick = $_[0];
+    utf8::decode($nick);
     my $attr = $_[1];
+    utf8::decode($attr);
     my $truncation = $_[2];
 
     my $len = nick_length($nick);
@@ -132,8 +135,10 @@ sub create_irssi_nick
         }
     }
 
+    utf8::encode($nick);
     if($attr)
     {
+        utf8::encode($attr);
         return $format . $nick . create_color_command_code('%K') . $attr;
     }
     return $format . $nick;
@@ -174,12 +179,17 @@ sub create_padding
 sub extract_attribution
 {
     my $nick = $_[0];
-    Encode::_utf8_on($nick);
+    utf8::decode($nick);
 
     # Split nickname from boundary of allowed IRC nickname characters.
     # Non-breakable space and zero-width space are valid characters.
-    $nick =~ /^([\w\s\|\^_`\-\{\}\[\]\\\x{00A0}\x{200B}\x{202F}]+)(.*)$/;
-    return ($1, $2);
+    # Zero allowed IRC nickname characters are accepted.
+    $nick =~ /^([\w\s\|\^_`\-\{\}\[\]\\\x{00A0}\x{200B}\x{202F}]*)(.*)$/;
+    my $ret1 = $1;
+    my $ret2 = $2;
+    utf8::encode($ret1);
+    utf8::encode($ret2);
+    return ($ret1, $ret2);
 }
 
 # Calculates djb2 hash over an array.
@@ -356,7 +366,8 @@ sub signal_cn_private
     my ($server, $param1, $input_nick, $param3, $param4) = @_;
     my ($nick, $attr) = extract_attribution($input_nick);
     my $truncation_long = Irssi::settings_get_int('colored_nicks_truncation_long');
-    $expando_cnnick = create_irssi_nick($nick, $attr, $truncation_long);
+    $expando_cnnickl = create_irssi_nick($nick, $attr, $truncation_long);
+    $expando_cnnicks = '';
     $expando_cnpadl = create_padding($nick, $attr, $truncation_long);
     $expando_cnpads = '';
     $expando_cnuser = '';
@@ -374,7 +385,8 @@ sub signal_cn_public
     my ($nick, $attr) = extract_attribution($input_nick);
     my $truncation_long = Irssi::settings_get_int('colored_nicks_truncation_long');
     my $truncation_short = Irssi::settings_get_int('colored_nicks_truncation_short');
-    $expando_cnnick = create_irssi_nick($nick, $attr, $truncation_long);
+    $expando_cnnickl = create_irssi_nick($nick, $attr, $truncation_long);
+    $expando_cnnicks = create_irssi_nick($nick, $attr, $truncation_short);
     $expando_cnpadl = create_padding($nick, $attr, $truncation_long);
     $expando_cnpads = create_padding($nick, $attr, $truncation_short);
     $expando_cnuser = '';
@@ -388,7 +400,8 @@ sub signal_cn_own_public
 {
     my ($server, $param1, $param2) = @_;
     my $truncation_long = Irssi::settings_get_int('colored_nicks_truncation_long');
-    $expando_cnnick = '';
+    $expando_cnnickl = '';
+    $expando_cnnicks = '';
     $expando_cnpadl = create_padding($server->{nick}, '', $truncation_long);
     $expando_cnpads = '';
     $expando_cnuser = create_irssi_nick($server->{nick}, '', $truncation_long);
@@ -405,7 +418,8 @@ sub signal_cn_own_private
     my ($server, $param1, $input_nick, $param3) = @_;
     my ($nick, $attr) = extract_attribution($input_nick);
     my $truncation_long = Irssi::settings_get_int('colored_nicks_truncation_long');
-    $expando_cnnick = create_irssi_nick($nick, $attr, $truncation_long);
+    $expando_cnnickl = create_irssi_nick($nick, $attr, $truncation_long);
+    $expando_cnnicks = '';
     $expando_cnpadl = create_padding($nick, $attr, $truncation_long);
     $expando_cnpads = create_padding($server->{nick}, '', $truncation_long);
     $expando_cnuser = create_irssi_nick($server->{nick}, '', $truncation_long);
@@ -436,7 +450,15 @@ Irssi::settings_add_str('misc', 'colored_nicks_hash_function', 'djb2');
 Irssi::settings_add_int('misc', 'colored_nicks_truncation_long', 12);
 Irssi::settings_add_int('misc', 'colored_nicks_truncation_short', 11);
 
-Irssi::expando_create('cnnick', sub { $expando_cnnick }, {
+Irssi::expando_create('cnnickl', sub { $expando_cnnickl }, {
+        'message public' => 'none',
+        'message own_public' => 'none',
+        (map { ("message $_ action" => 'none',
+                "message $_ own_action" => 'none')
+            } @action_protos),
+    });
+
+Irssi::expando_create('cnnicks', sub { $expando_cnnicks }, {
         'message public' => 'none',
         'message own_public' => 'none',
         (map { ("message $_ action" => 'none',
