@@ -76,10 +76,10 @@ The script provides the following expandos:
     $cnpads
     $cnuser
 
-`$cnnickl` is the string for general nicknames truncated into `colored_nicks_truncation_long`.
+`$cnnickl` is the string for general nicknames truncated into `colored_nicks_truncation_long`.<br>
 `$cnnicks` is the string for general nicknames truncated into `colored_nicks_truncation_short`.
 
-`$cnpadl` is the whitespace padding remaining after truncating the nicknames into `colored_nicks_truncation_long`. `$cnpads` is the whitespace padding remaining after truncating the nicknames into `colored_nicks_truncation_short`.
+`$cnpadl` is the whitespace padding remaining after truncating the nicknames into `colored_nicks_truncation_long`. <br>`$cnpads` is the whitespace padding remaining after truncating the nicknames into `colored_nicks_truncation_short`.
 
 `$cnuser` is the truncated string for the user's nickname. Since there can be no hilight from user's own strings, there is no need for potential long and short version.
 
