@@ -103,9 +103,7 @@ sub create_color_command_code
 sub create_irssi_nick
 {
     my $nick = $_[0];
-    utf8::decode($nick);
     my $attr = $_[1];
-    utf8::decode($attr);
     my $truncation = $_[2];
 
     my $len = nick_length($nick);
@@ -135,10 +133,8 @@ sub create_irssi_nick
         }
     }
 
-    utf8::encode($nick);
     if($attr)
     {
-        utf8::encode($attr);
         return $format . $nick . create_color_command_code('%K') . $attr;
     }
     return $format . $nick;
@@ -185,11 +181,7 @@ sub extract_attribution
     # Non-breakable space and zero-width space are valid characters.
     # Zero allowed IRC nickname characters are accepted.
     $nick =~ /^([\w\s\|\^_`\-\{\}\[\]\\\x{00A0}\x{200B}\x{202F}]*)(.*)$/;
-    my $ret1 = $1;
-    my $ret2 = $2;
-    utf8::encode($ret1);
-    utf8::encode($ret2);
-    return ($ret1, $ret2);
+    return ($1, $2);
 }
 
 # Calculates djb2 hash over an array.
